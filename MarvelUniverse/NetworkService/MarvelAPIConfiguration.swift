@@ -15,7 +15,9 @@ public struct MarvelResponse<T: Codable>: Codable {
 }
 
 public struct MarvelResults<T: Codable>: Codable {
-    public let results: [T]
+    public var results: [T]
+    public let total: Int
+    public let count: Int
 }
 
 let configuration: NetworkLoggerPlugin.Configuration = .init(

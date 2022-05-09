@@ -4,6 +4,8 @@ platform :ios, '13.0'
 def pods
 
   pod 'Moya'
+  pod 'SnapKit'
+  pod 'SDWebImage'
 
 end
 

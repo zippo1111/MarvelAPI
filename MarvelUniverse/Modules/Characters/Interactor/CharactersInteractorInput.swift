@@ -8,5 +8,7 @@
 import Foundation
 
 protocol CharactersInteractorInput {
-    func loadCharacters()
+    func loadInitialCharacters()
+    func getDetailsDataStorage(at index: Int) -> CharacterDetailsDataStorage?
+    func loadMore()
 }

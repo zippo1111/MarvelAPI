@@ -8,4 +8,5 @@
 protocol CharactersViewOutput {
     func viewIsReady()
     func didTapCell(at index: Int)
+    func didScrollToEnd()
 }

@@ -7,6 +7,12 @@
 
 import Foundation
 
+public struct CharacterData: Codable {
+    public var results: [Character]
+    public let total: Int
+    public let count: Int
+}
+
 public struct Character: Codable {
     public let id: Int
     public let name: String

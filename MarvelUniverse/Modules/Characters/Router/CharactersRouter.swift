@@ -8,7 +8,9 @@
 import Foundation
 
 final class CharactersRouter: BaseRouter, CharactersRouterInput {
-    func goToDetails() {
+    func goToDetails(_ dataStorage: CharacterDetailsDataStorage) {
+        let viewController = CharacterDetailsWireframe().initCharacterDetailsViewController(dataStorage)
 
+        present(viewController, context: nil, animated: false, completion: nil)
     }
 }

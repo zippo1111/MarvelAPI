@@ -15,10 +15,18 @@ final class CharactersConfigurator {
     ) {
         if let viewController = viewInput as? CharactersTableViewController {
             let router = CharactersRouter(viewController: viewController)
-            let interactor = CharactersInteractor(dataStorage: dataStorage)
-            let presenter = CharactersPresenter(router: router, interactor: interactor)
+            let presenter = CharactersPresenter()
+            let interactor = CharactersInteractor(
+                dataStorage: dataStorage,
+                output: presenter
+            )
+
+            presenter.router = router
+            presenter.interactor = interactor
 
             viewController.output = presenter
+
+            presenter.output = viewController
         }
     }
 

@@ -17,6 +17,7 @@ final class CharactersWireframe {
     ) -> CharactersTableViewController {
         if viewController == nil {
             viewController = CharactersTableViewController()
+            viewController?.navigationController?.setNavigationBarHidden(true, animated: false)
         }
 
         configurator.configureModule(

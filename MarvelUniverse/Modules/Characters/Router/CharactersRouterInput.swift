@@ -8,5 +8,5 @@
 import Foundation
 
 protocol CharactersRouterInput: BaseRouterInput {
-    func goToDetails()
+    func goToDetails(_ dataStorage: CharacterDetailsDataStorage)
 }
