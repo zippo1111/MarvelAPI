@@ -24,8 +24,8 @@ final class CharactersInteractor {
     private enum Constants {
         static let defaultLimit = 20
         static let defaultOffset = 20
-        static let errorTitle = "Error:"
-        static let errorMessage = "Error:"
+        static let errorTitle = "Error"
+        static let errorMessage = "Error with loading or the server:"
     }
 
     private var state: State = .loading {
@@ -44,7 +44,7 @@ final class CharactersInteractor {
 
                 output.load(data: mutableData)
             case .loading:
-                output.loading()
+                break
             case .error:
                 output.show(
                     errorMessage: Constants.errorMessage,
@@ -65,7 +65,7 @@ final class CharactersInteractor {
 
 extension CharactersInteractor: CharactersInteractorInput {
     func loadInitialCharacters() {
-        marvelProvider.request(.characters(nil, nil)) { [weak self] result in
+        marvelProvider.request(.characters(nil, nil, nil)) { [weak self] result in
             switch result {
             case let .success(response):
                 do {
@@ -97,12 +97,31 @@ extension CharactersInteractor: CharactersInteractorInput {
         offset += Constants.defaultOffset
 
         marvelProvider.request(
-            .characters(Constants.defaultLimit, offset)
+            .characters(Constants.defaultLimit, offset, nil)
         ) { [weak self] result in
             switch result {
             case let .success(response):
                 do {
                     self?.state = .loadMore(
+                        try response.map(MarvelResponse<Character>.self).data
+                    )
+                } catch {
+                    self?.state = .error
+                }
+            case .failure(_):
+                self?.state = .error
+            }
+        }
+    }
+
+    func search(name startWith: String) {
+        marvelProvider.request(
+            .characters(nil, nil, startWith)
+        ) { [weak self] result in
+            switch result {
+            case let .success(response):
+                do {
+                    self?.state = .ready(
                         try response.map(MarvelResponse<Character>.self).data
                     )
                 } catch {

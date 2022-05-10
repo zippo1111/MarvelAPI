@@ -14,13 +14,16 @@ final class ModuleRouter: ModuleRouterInput {
         self.rootController = rootController
     }
 
-    func setRootModule(_ module: UIViewController?, animated: Bool, hideBar: Bool) {
+    func setRootModule(_ module: UIViewController?, animated: Bool, hideBar: Bool, hideStatusBar: Bool) {
         guard let module = module else {
             return
         }
 
         rootController?.setViewControllers([module], animated: animated)
-        rootController?.isNavigationBarHidden = hideBar
+        rootController?.setNavigationBarHidden(hideBar, animated: false)
+
+        module
+        rootController?.setNeedsStatusBarAppearanceUpdate()
     }
 
     func dismiss(animated: Bool, completion: VoidBlock?) {

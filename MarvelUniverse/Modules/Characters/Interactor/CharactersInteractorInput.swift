@@ -11,4 +11,5 @@ protocol CharactersInteractorInput {
     func loadInitialCharacters()
     func getDetailsDataStorage(at index: Int) -> CharacterDetailsDataStorage?
     func loadMore()
+    func search(name startWith: String)
 }

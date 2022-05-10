@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E98E622F-DB5F-4A87-82F2-DE19716406A1"
+            uuid = "D82449BC-E3A6-44F0-861C-B8DCCF3EAF6C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MarvelUniverse/Modules/Characters/View/Cells/CharacterCell.swift"
+            filePath = "MarvelUniverse/Common/Routers/ModuleRouter.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
-            landmarkName = "configure(viewModel:)"
+            startingLineNumber = "19"
+            endingLineNumber = "19"
+            landmarkName = "setRootModule(_:animated:hideBar:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -8,6 +8,6 @@
 import UIKit
 
 protocol ModuleRouterInput {
-    func setRootModule(_ module: UIViewController?, animated: Bool, hideBar: Bool)
+    func setRootModule(_ module: UIViewController?, animated: Bool, hideBar: Bool, hideStatusBar: Bool)
     func dismiss(animated: Bool, completion: VoidBlock?)
 }

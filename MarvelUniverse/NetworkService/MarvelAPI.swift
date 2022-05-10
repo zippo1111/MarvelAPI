@@ -10,7 +10,7 @@ import Moya
 import CryptoKit
 
 public enum Marvel {
-    case characters(Int?, Int?)
+    case characters(Int?, Int?, String?)
 }
 
 // MARK: - Provider configuration
@@ -28,6 +28,7 @@ private enum Constants {
     static let orderBy = "name"
     static let limitKey = "limit"
     static let offsetKey = "offset"
+    static let nameStartsWithKey = "nameStartsWith"
 }
 
 // MARK: - Extensions
@@ -47,20 +48,18 @@ extension Marvel: TargetType {
     public var method: Moya.Method { .get }
 
     public var task: Task {
-//        guard let privateKey = PlistFields.privateKey,
-//              let publicKey = PlistFields.publicKey
-//        else {
-//            return .requestPlain
-//        }
+        guard let privateKey = PlistFields.privateKey,
+              let publicKey = PlistFields.publicKey
+        else {
+            return .requestPlain
+        }
 
         let ts = "\(Date().timeIntervalSince1970)"
-        let privateKey = "1098df006e7e6edce50211c7be6431daabee3d73"
-        let publicKey = "5d94fab0240e515bd064e7d9362f8e78"
         let hashString = ts+"\(privateKey)"+"\(publicKey)"
         let hash = hashString.md5
 
         switch self {
-        case .characters(let limit, let offset):
+        case .characters(let limit, let offset, let nameStartsWith):
             var parameters: [String: String] = [
                 "orderBy": Constants.orderBy,
                 "ts": ts,
@@ -78,6 +77,13 @@ extension Marvel: TargetType {
                 parameters.updateValue(
                     "\(offset)",
                     forKey: Constants.offsetKey
+                )
+            }
+
+            if let nameStartsWith = nameStartsWith {
+                parameters.updateValue(
+                    "\(nameStartsWith)",
+                    forKey: Constants.nameStartsWithKey
                 )
             }
 

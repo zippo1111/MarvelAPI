@@ -8,24 +8,20 @@
 import UIKit
 
 class CharactersTableViewController: UITableViewController {
-
     var output: CharactersViewOutput?
+    var isStatusBarHidden = true
 
     private var characterViewModels = [CharacterViewModel]()
-    private var searchController: UISearchController?
+    private var characterDataViewModel: CharacterDataViewModel?
+    private var searchController = SearchController(searchResultsController: nil)
     private var isSearching = false
-    private var filteredViewModels = [CharacterViewModel]()
-    private var isLoadingData = false
     private var isLoadMore = false
 
     private lazy var numberOfSections: Int = {
-        !isLoadMore ? 2 : 1
+        isLoadMore || isSearching ? 1 : 2
     }()
 
-    private let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView()
-        return indicator
-    }()
+    private let activityIndicator = UIActivityIndicatorView()
 
     private enum Constants {
         static let heightForRow: CGFloat = 240
@@ -49,6 +45,10 @@ class CharactersTableViewController: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override var prefersStatusBarHidden: Bool {
+        isStatusBarHidden
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -64,7 +64,7 @@ class CharactersTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard section == Sections.activityIndicator.rawValue else {
-            return isSearching ? filteredViewModels.count : characterViewModels.count
+            return characterViewModels.count
         }
 
         return 1
@@ -74,9 +74,7 @@ class CharactersTableViewController: UITableViewController {
         guard indexPath.section == Sections.activityIndicator.rawValue else {
             let cell: CharacterCell = tableView.dequeueReusableCell(withIdentifier: Constants.cellIdentifier, for: indexPath) as! CharacterCell
 
-            let viewModel = isSearching ?
-                filteredViewModels[indexPath.row] :
-                characterViewModels[indexPath.row]
+            let viewModel = characterViewModels[indexPath.row]
 
             cell.configure(viewModel: viewModel)
 
@@ -88,6 +86,7 @@ class CharactersTableViewController: UITableViewController {
         
         activityIndicator.startAnimating()
         loaderCell.addSubview(activityIndicator)
+        activityIndicator.isHidden = isSearching
 
         return loaderCell
     }
@@ -97,7 +96,7 @@ class CharactersTableViewController: UITableViewController {
             return Constants.heightForRow
         }
 
-        return isLoadMore ? activityIndicator.bounds.height : .zero
+        return isLoadMore && !isSearching ? activityIndicator.bounds.height : .zero
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -108,8 +107,13 @@ class CharactersTableViewController: UITableViewController {
         let height = scrollView.frame.size.height
         let contentYoffset = scrollView.contentOffset.y
         let distanceFromBottom = scrollView.contentSize.height - contentYoffset
-        if distanceFromBottom < height, !isLoadMore {
-            isLoadMore = true
+        if distanceFromBottom < height, !isLoadMore, !isSearching {
+            if let dataViewModel = characterDataViewModel {
+                isLoadMore = dataViewModel.count < dataViewModel.total && !isSearching
+            } else {
+                isLoadMore = true
+            }
+
             output?.didScrollToEnd()
         }
     }
@@ -131,10 +135,11 @@ class CharactersTableViewController: UITableViewController {
     }
 
     func setupSearchView() {
-        searchController = UISearchController(searchResultsController: nil)
-        searchController?.searchBar.delegate = self
-        searchController?.searchBar.placeholder = ""
-        tableView.tableHeaderView = searchController?.searchBar
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = ""
+        searchController.isStatusBarHidden = isStatusBarHidden
+        searchController.setNeedsStatusBarAppearanceUpdate()
+        tableView.tableHeaderView = searchController.searchBar
     }
 
     private func alert(errorMessage: String, errorTitle: String) {
@@ -157,47 +162,52 @@ class CharactersTableViewController: UITableViewController {
 
 extension CharactersTableViewController: CharactersViewInput {
     func configureView(viewModels: CharacterDataViewModel) {
-        self.characterViewModels = viewModels.characterViewModels
-        isLoadingData = false
-        isLoadMore = viewModels.count < viewModels.total
+        characterDataViewModel = viewModels
+        characterViewModels = viewModels.characterViewModels
+
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+            self.activityIndicator.stopAnimating()
+        }
 
         if isLoadMore {
             isLoadMore = false
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-                self.activityIndicator.stopAnimating()
-            }
         }
     }
 
     func showAlert(message: String, title: String) {
         alert(errorMessage: message, errorTitle: title)
     }
-
-    func setIsLoadingData() {
-        isLoadingData = true
-    }
 }
 
 extension CharactersTableViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if !searchText.isEmpty {
-            filteredViewModels = characterViewModels.filter {
-                $0.title.lowercased().contains(searchText.lowercased())
-            }
-            isSearching = true
+        if searchText.isEmpty {
+            output?.viewIsReady()
+            turnOffSearching()
         } else {
-            filteredViewModels.removeAll(keepingCapacity: true)
-            isSearching = false
+            output?.search(name: searchText)
+            turnOnSearching()
         }
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
+
+        reloadAfterSearching()
     }
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        filteredViewModels.removeAll(keepingCapacity: true)
+        output?.viewIsReady()
+
+        turnOffSearching()
+    }
+
+    private func turnOffSearching() {
         isSearching = false
+    }
+
+    private func turnOnSearching() {
+        isSearching = true
+    }
+
+    private func reloadAfterSearching() {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }

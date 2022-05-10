@@ -9,6 +9,5 @@ import Foundation
 
 protocol CharactersInteractorOutput: AnyObject {
     func load(data: MarvelResults<Character>)
-    func loading()
     func show(errorMessage: String, errorTitle: String)
 }

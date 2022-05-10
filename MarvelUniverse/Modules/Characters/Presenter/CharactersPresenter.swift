@@ -36,10 +36,6 @@ extension CharactersPresenter: CharactersInteractorOutput {
         configureView(data: data)
     }
 
-    func loading() {
-        output.setIsLoadingData()
-    }
-
     func show(errorMessage: String, errorTitle: String) {
         output.showAlert(message: errorMessage, title: errorTitle)
     }
@@ -60,5 +56,9 @@ extension CharactersPresenter: CharactersViewOutput {
 
     func didScrollToEnd() {
         interactor.loadMore()
+    }
+
+    func search(name startWith: String) {
+        interactor.search(name: startWith)
     }
 }

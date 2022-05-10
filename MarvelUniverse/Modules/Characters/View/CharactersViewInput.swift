@@ -8,5 +8,4 @@
 protocol CharactersViewInput: AnyObject {
     func configureView(viewModels: CharacterDataViewModel)
     func showAlert(message: String, title: String)
-    func setIsLoadingData()
 }

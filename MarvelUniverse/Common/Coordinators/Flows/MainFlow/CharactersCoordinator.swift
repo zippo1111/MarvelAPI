@@ -21,6 +21,8 @@ final class CharactersCoordinator: BaseCoordinator {
 
         let router = ModuleRouter(rootController: navigationController)
         let module = CharactersWireframe().initCharactersViewController()
-        router.setRootModule(module, animated: false, hideBar: true)
+        module.isStatusBarHidden = true
+
+        router.setRootModule(module, animated: false, hideBar: true, hideStatusBar: true)
     }
 }
