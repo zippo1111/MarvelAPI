@@ -9,7 +9,7 @@ import Foundation
 import Moya
 import CryptoKit
 
-public enum Marvel {
+enum Marvel {
     case characters(Int?, Int?, String?)
 }
 

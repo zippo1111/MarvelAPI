@@ -34,7 +34,7 @@ final class CharactersInteractor {
             case .ready(let data):
                 self.characters = data.results
 
-                output.load(data: data)
+                output.updateView(with: data)
             case .loadMore(var mutableData):
                 self.characters?.append(contentsOf: mutableData.results)
 
@@ -42,7 +42,7 @@ final class CharactersInteractor {
                     mutableData.results = characters
                 }
 
-                output.load(data: mutableData)
+                output.updateView(with: mutableData)
             case .loading:
                 break
             case .error:

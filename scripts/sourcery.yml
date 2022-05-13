@@ -1,0 +1,6 @@
+sources:
+  - ../MarvelUniverse
+templates:
+  - ./Templates/AutoMockable.stencil
+output:
+  ../MarvelUniverseTests/Generated

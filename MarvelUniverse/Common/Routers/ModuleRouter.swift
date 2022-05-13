@@ -21,8 +21,6 @@ final class ModuleRouter: ModuleRouterInput {
 
         rootController?.setViewControllers([module], animated: animated)
         rootController?.setNavigationBarHidden(hideBar, animated: false)
-
-        module
         rootController?.setNeedsStatusBarAppearanceUpdate()
     }
 

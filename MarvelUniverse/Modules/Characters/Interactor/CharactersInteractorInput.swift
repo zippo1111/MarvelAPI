@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol CharactersInteractorInput {
     func loadInitialCharacters()
     func getDetailsDataStorage(at index: Int) -> CharacterDetailsDataStorage?

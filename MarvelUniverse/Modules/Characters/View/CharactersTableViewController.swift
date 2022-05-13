@@ -124,7 +124,7 @@ class CharactersTableViewController: UITableViewController {
         layoutActivityIndicator()
     }
 
-    func setupTableView() {
+    private func setupTableView() {
         tableView.backgroundColor = .systemGroupedBackground
         tableView.register(
             CharacterCell.self,
@@ -134,22 +134,12 @@ class CharactersTableViewController: UITableViewController {
         tableView.separatorStyle = .none
     }
 
-    func setupSearchView() {
+    private func setupSearchView() {
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = ""
         searchController.isStatusBarHidden = isStatusBarHidden
         searchController.setNeedsStatusBarAppearanceUpdate()
         tableView.tableHeaderView = searchController.searchBar
-    }
-
-    private func alert(errorMessage: String, errorTitle: String) {
-        let alert = UIAlertController(
-            title: errorTitle,
-            message: errorMessage,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: Constants.alertTitle, style: .cancel, handler: nil))
-        present(alert, animated: false, completion: nil)
     }
 
     private func layoutActivityIndicator() {
@@ -175,8 +165,15 @@ extension CharactersTableViewController: CharactersViewInput {
         }
     }
 
-    func showAlert(message: String, title: String) {
-        alert(errorMessage: message, errorTitle: title)
+    func showAlert(_ alertService: AlertProtocol, message: String, title: String) {
+        alertService.addAction(titled: Constants.alertTitle, style: .cancel, handler: nil)
+        alertService.present(
+            title: title,
+            message: message,
+            on: self,
+            animated: false,
+            completion: nil
+        )
     }
 }
 

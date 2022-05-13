@@ -7,8 +7,6 @@
 
 import UIKit
 
-typealias VoidBlock = (() -> Void)
-
 protocol BaseRouterInput: AnyObject {
 
     var sourceViewController: UIViewController? { get }

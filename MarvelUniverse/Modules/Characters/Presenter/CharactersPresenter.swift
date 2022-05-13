@@ -13,31 +13,27 @@ final class CharactersPresenter {
     var router: CharactersRouterInput!
     var interactor: CharactersInteractorInput!
 
+    private let viewModelService: CharactersPresenterServiceProtocol!
+    private let alertService: AlertProtocol!
+
+    init(alertService: AlertProtocol, viewModelService: CharactersPresenterServiceProtocol) {
+        self.alertService = alertService
+        self.viewModelService = viewModelService
+    }
+
     private func configureView(data: MarvelResults<Character>) {
-        let characterViewModels = data.results.map {
-            CharacterViewModel(
-                title: $0.name,
-                imageUrl: $0.thumbnail.url
-            )
-        }
-
-        let viewModels = CharacterDataViewModel(
-            total: data.total,
-            count: data.count,
-            characterViewModels: characterViewModels
-        )
-
+        let viewModels = viewModelService.getViewModel(data: data)
         output.configureView(viewModels: viewModels)
     }
 }
 
 extension CharactersPresenter: CharactersInteractorOutput {
-    func load(data: MarvelResults<Character>) {
+    func updateView(with data: MarvelResults<Character>) {
         configureView(data: data)
     }
 
     func show(errorMessage: String, errorTitle: String) {
-        output.showAlert(message: errorMessage, title: errorTitle)
+        output.showAlert(alertService, message: errorMessage, title: errorTitle)
     }
 }
 

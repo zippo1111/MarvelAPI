@@ -7,7 +7,8 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol CharactersInteractorOutput: AnyObject {
-    func load(data: MarvelResults<Character>)
+    func updateView(with data: MarvelResults<Character>)
     func show(errorMessage: String, errorTitle: String)
 }

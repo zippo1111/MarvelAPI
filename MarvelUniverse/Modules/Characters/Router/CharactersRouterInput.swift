@@ -7,6 +7,7 @@
 
 import Foundation
 
+// sourcery: AutoMockable
 protocol CharactersRouterInput: BaseRouterInput {
     func goToDetails(_ dataStorage: CharacterDetailsDataStorage)
 }

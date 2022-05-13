@@ -11,22 +11,20 @@ final class CharacterDetailsPresenter {
     weak var output: CharacterDetailsViewInput!
     var router: CharacterDetailsRouterInput!
     var interactor: CharacterDetailsInteractorInput!
+
+    private let viewModelService: CharacterDetailsPresenterServiceProtocol!
+
+    init(viewModelService: CharacterDetailsPresenterServiceProtocol) {
+        self.viewModelService = viewModelService
+    }
 }
 
 extension CharacterDetailsPresenter: CharacterDetailsInteractorOutput {
     func loadView(with dataStorage: CharacterDetailsDataStorage) {
-        guard let name = dataStorage.name,
-              let description = dataStorage.description,
-              let photoUrl = dataStorage.photoUrl
-        else {
+        guard let viewModel = viewModelService.getViewModel(dataStorage: dataStorage) else {
             return
         }
 
-        let viewModel = CharacterDetailsViewModel(
-            name: name,
-            imageUrl: photoUrl,
-            description: description
-        )
         output.configureView(viewModel: viewModel)
     }
 }

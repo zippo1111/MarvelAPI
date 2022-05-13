@@ -15,7 +15,7 @@ final class CharacterDetailsConfigurator {
     ) {
         if let viewController = viewInput as? CharacterDetailsViewController {
             let router = CharacterDetailsRouter(viewController: viewController)
-            let presenter = CharacterDetailsPresenter()
+            let presenter = CharacterDetailsPresenter(viewModelService: CharacterDetailsPresenterService())
             let interactor = CharacterDetailsInteractor(
                 dataStorage: dataStorage,
                 output: presenter
